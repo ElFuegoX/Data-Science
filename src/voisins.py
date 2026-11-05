@@ -1,4 +1,6 @@
 import os
+from functools import lru_cache
+
 import joblib
 import numpy as np
 import pandas as pd
@@ -104,6 +106,15 @@ def entrainer(X, y, k=25, seuil=0.5):
     }
 
 
+@lru_cache(maxsize=1)
+def charger_modele():
+    """Lit models/voisins.joblib une seule fois, puis le garde en mémoire.
+
+    Après avoir réenregistré le fichier dans le même processus, appeler charger_modele.cache_clear().
+    """
+    return joblib.load(CHEMIN_MODELE)
+
+
 def voisins(profil, k=None, objet=None):
     """profil : DataFrame d'une ligne, mêmes colonnes que X.
 
@@ -114,7 +125,7 @@ def voisins(profil, k=None, objet=None):
     """
     obj = objet
     if obj is None:
-        obj = joblib.load(CHEMIN_MODELE)
+        obj = charger_modele()
 
     k = int(k) if k is not None else int(obj["k"])
 
