@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mtaa · Inclusion financière</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏦</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div class="hero-texte">
+        <div class="badge">Data story · Afrique de l'Est</div>
+        <h1>Comprendre l'accès<br>au compte bancaire.</h1>
+        <p class="intro">Décrivez un profil pour obtenir une estimation transparente, fondée sur
+          <span id="lignes">23 524</span> personnes enquêtées au Kenya, au Rwanda, en Tanzanie et en Ouganda.</p>
+      </div>
+      <div class="carte-sombre">
+        <div class="etiquette">Dans l'échantillon</div>
+        <div class="grand" id="taux-global">–</div>
+        <div class="note-claire">des personnes ont un compte bancaire</div>
+      </div>
+    </header>
+
+    <div class="bandeau" id="bandeau" hidden></div>
+
+    <nav class="onglets" role="tablist">
+      <button role="tab" aria-selected="true" data-onglet="complet">Profil complet</button>
+      <button role="tab" aria-selected="false" data-onglet="court">Estimation rapide</button>
+      <button role="tab" aria-selected="false" data-onglet="propos">À propos</button>
+    </nav>
+
+    <section class="vue" id="vue-complet">
+      <form class="carte formulaire" id="form-complet" autocomplete="off">
+        <div class="surtitre">Étape 01 · Votre profil</div>
+        <h2>Quelques questions</h2>
+        <p class="note">Les réponses servent uniquement à calculer l'estimation ci-contre.</p>
+        <div class="champs"></div>
+      </form>
+
+      <div class="resultats" id="resultats" aria-live="polite">
+        <div class="alertes" id="alertes"></div>
+        <div class="duo">
+          <div class="carte" id="carte-proba"></div>
+          <div class="carte" id="carte-voisins"></div>
+        </div>
+        <div class="carte">
+          <h3>Ce qui fait monter ou baisser le score</h3>
+          <div class="facteurs" id="facteurs"></div>
+          <p class="note"><span class="pastille bleu"></span>fait monter le score <span class="pastille orange"></span>le fait baisser.
+            Ce sont les appuis du modèle, pas des causes.</p>
+        </div>
+        <div class="duo duo-inegal">
+          <div class="carte">
+            <h3>Même profil, autres pays</h3>
+            <div class="barres" id="pays"></div>
+            <p class="note">⚠ : emploi absent des données de ce pays. Le pays se confond avec l'année d'enquête :
+              l'écart montre la réaction du modèle, pas l'effet d'un déménagement.</p>
+          </div>
+          <div class="carte">
+            <h3>Même profil, autre genre</h3>
+            <div class="barres" id="genres"></div>
+            <p class="note">Réaction du modèle, pas un effet causal. Le lien au chef de ménage relaie en partie le genre :
+              98,6 % des conjoints sont des femmes.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="vue" id="vue-court" hidden>
+      <form class="carte formulaire" id="form-court" autocomplete="off">
+        <div class="surtitre">Mode express</div>
+        <h2 id="titre-court">Moins de questions</h2>
+        <p class="note" id="sous-titre-court"></p>
+        <div class="champs"></div>
+      </form>
+      <div class="resultats">
+        <div class="duo">
+          <div class="carte" id="carte-court"></div>
+          <div class="carte" id="carte-complet-rappel"></div>
+        </div>
+        <p class="note" id="comparaison"></p>
+      </div>
+    </section>
+
+    <section class="vue" id="vue-propos" hidden>
+      <div class="carte propos">
+        <ul>
+          <li><strong>Données :</strong> enquêtes Zindi « Financial Inclusion in Africa », 23 524 personnes, dont 14,08 % avec un compte.</li>
+          <li><strong>Tanzanie :</strong> les données d'entraînement sont corrigées <strong>en supposant vraie notre hypothèse</strong>
+            d'inversion des libellés de lieu et de statut marital. Aucune documentation ne la confirme.</li>
+          <li><strong>Échantillon :</strong> sans poids d'enquête, les résultats décrivent les personnes interrogées, pas la population de chaque pays.</li>
+          <li><strong>Limites :</strong> le modèle apprend des associations. Il ne dit pas ce qui arriverait si le profil d'une personne changeait.</li>
+          <li><strong>API :</strong> la documentation interactive est sur <a href="/docs">/docs</a>.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+  <script src="/static/app.js"></script>
+</body>
+</html>
