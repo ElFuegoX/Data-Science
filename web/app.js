@@ -196,7 +196,7 @@ function echelle(probabilite) {
 function phraseProbabilite(probabilite) {
   const ecart = Math.round((probabilite - etat.ref.taux_global) * 100);
   if (Math.abs(ecart) < 1) return `de chances d'avoir un compte, autant que la moyenne de l'échantillon (${pourcent(etat.ref.taux_global)}).`;
-  return `de chances d'avoir un compte, soit ${Math.abs(ecart)} points de ${ecart > 0 ? "plus" : "moins"} que la moyenne de l'échantillon (${pourcent(etat.ref.taux_global)}).`;
+  return `de chances d'avoir un compte, soit ${Math.abs(ecart)} ${Math.abs(ecart) > 1 ? "points" : "point"} de ${ecart > 0 ? "plus" : "moins"} que la moyenne de l'échantillon (${pourcent(etat.ref.taux_global)}).`;
 }
 
 function facteurs(lignes) {
