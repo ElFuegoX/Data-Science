@@ -3,102 +3,126 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mtaa · Inclusion financière</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏦</text></svg>">
+  <title>Mtaa · Qui a un compte en banque ?</title>
+  <meta name="description" content="Estimez la probabilité d'avoir un compte bancaire au Kenya, au Rwanda, en Tanzanie et en Ouganda.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><path d='M0 40 20 0 40 40Z' fill='%23c4572e'/><path d='M10 40 20 20 30 40Z' fill='%23d49a2a'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=DM+Sans:wght@500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <main class="page">
-    <header class="hero">
-      <div class="hero-texte">
-        <div class="badge">Data story · Afrique de l'Est</div>
-        <h1>Comprendre l'accès<br>au compte bancaire.</h1>
-        <p class="intro">Décrivez un profil pour obtenir une estimation transparente, fondée sur
-          <span id="lignes">23 524</span> personnes enquêtées au Kenya, au Rwanda, en Tanzanie et en Ouganda.</p>
-      </div>
-      <div class="carte-sombre">
-        <div class="etiquette">Dans l'échantillon</div>
-        <div class="grand" id="taux-global">–</div>
-        <div class="note-claire">des personnes ont un compte bancaire</div>
-      </div>
-    </header>
+  <div class="frise" aria-hidden="true"></div>
 
-    <div class="bandeau" id="bandeau" hidden></div>
-
-    <nav class="onglets" role="tablist">
-      <button role="tab" aria-selected="true" data-onglet="complet">Profil complet</button>
-      <button role="tab" aria-selected="false" data-onglet="court">Estimation rapide</button>
-      <button role="tab" aria-selected="false" data-onglet="propos">À propos</button>
+  <header class="tete">
+    <div class="marque">Mtaa <span>·</span> Inclusion financière en Afrique de l'Est</div>
+    <h1>Qui a un compte<br>en banque&nbsp;?</h1>
+    <p class="chapo">Sur <span id="lignes">23 524</span> personnes interrogées au Kenya, au Rwanda, en Tanzanie et en Ouganda,
+      <strong id="taux-global">14&nbsp;%</strong> seulement en ont un. Décrivez une personne&nbsp;: nous estimons ses chances,
+      et nous montrons sur quoi repose l'estimation.</p>
+    <nav class="modes" role="tablist" aria-label="Modes">
+      <button role="tab" aria-selected="true" data-mode="complet">Le portrait complet</button>
+      <button role="tab" aria-selected="false" data-mode="court">La version courte</button>
+      <button role="tab" aria-selected="false" data-mode="methode">Méthode et limites</button>
     </nav>
+    <p class="provisoire" id="provisoire" hidden></p>
+  </header>
 
-    <section class="vue" id="vue-complet">
-      <form class="carte formulaire" id="form-complet" autocomplete="off">
-        <div class="surtitre">Étape 01 · Votre profil</div>
-        <h2>Quelques questions</h2>
-        <p class="note">Les réponses servent uniquement à calculer l'estimation ci-contre.</p>
-        <div class="champs"></div>
-      </form>
+  <main>
+    <!-- Portrait complet -->
+    <section class="mode" id="mode-complet">
+      <div class="portrait">
+        <p class="consigne">Cliquez sur les mots soulignés pour changer le portrait.</p>
+        <p class="phrase" id="phrase-complet"></p>
+      </div>
 
-      <div class="resultats" id="resultats" aria-live="polite">
-        <div class="alertes" id="alertes"></div>
-        <div class="duo">
-          <div class="carte" id="carte-proba"></div>
-          <div class="carte" id="carte-voisins"></div>
-        </div>
-        <div class="carte">
-          <h3>Ce qui fait monter ou baisser le score</h3>
+      <div class="article" id="article" aria-live="polite">
+        <div class="encarts" id="encarts"></div>
+
+        <section class="une">
+          <div class="chiffre-une">
+            <div class="surtitre">Estimation</div>
+            <div class="enorme" id="proba">–</div>
+            <p class="phrase-resultat" id="phrase-proba"></p>
+          </div>
+          <div class="echelle" id="echelle" role="img"></div>
+        </section>
+
+        <section class="bloc">
+          <h2>Les personnes qui lui ressemblent</h2>
+          <p class="texte" id="texte-voisins"></p>
+        </section>
+
+        <section class="bloc">
+          <h2>Ce qui pèse dans l'estimation</h2>
           <div class="facteurs" id="facteurs"></div>
-          <p class="note"><span class="pastille bleu"></span>fait monter le score <span class="pastille orange"></span>le fait baisser.
-            Ce sont les appuis du modèle, pas des causes.</p>
-        </div>
-        <div class="duo duo-inegal">
-          <div class="carte">
-            <h3>Même profil, autres pays</h3>
-            <div class="barres" id="pays"></div>
-            <p class="note">⚠ : emploi absent des données de ce pays. Le pays se confond avec l'année d'enquête :
-              l'écart montre la réaction du modèle, pas l'effet d'un déménagement.</p>
+          <aside class="note">Les barres <span class="trait indigo"></span> indigo font monter l'estimation, les barres
+            <span class="trait terre"></span> terracotta la font baisser. Ce sont les appuis du modèle, pas des causes&nbsp;:
+            changer une réponse dans la vie réelle ne changerait pas forcément la situation.</aside>
+        </section>
+
+        <section class="bloc deux-colonnes">
+          <div>
+            <h2>Le même portrait, ailleurs</h2>
+            <div class="points" id="pays"></div>
+            <aside class="note" id="note-pays">Le pays se confond avec l'année de l'enquête et la façon de coder l'emploi&nbsp;:
+              l'écart montre la réaction du modèle, pas l'effet d'un déménagement.</aside>
           </div>
-          <div class="carte">
-            <h3>Même profil, autre genre</h3>
-            <div class="barres" id="genres"></div>
-            <p class="note">Réaction du modèle, pas un effet causal. Le lien au chef de ménage relaie en partie le genre :
-              98,6 % des conjoints sont des femmes.</p>
+          <div>
+            <h2>Et avec l'autre genre&nbsp;?</h2>
+            <div class="points" id="genres"></div>
+            <aside class="note">Réaction du modèle, pas effet du genre. Le lien avec le chef de ménage en est en partie un relais&nbsp;:
+              98,6&nbsp;% des conjoints du jeu de données sont des femmes.</aside>
           </div>
-        </div>
+        </section>
       </div>
     </section>
 
-    <section class="vue" id="vue-court" hidden>
-      <form class="carte formulaire" id="form-court" autocomplete="off">
-        <div class="surtitre">Mode express</div>
-        <h2 id="titre-court">Moins de questions</h2>
-        <p class="note" id="sous-titre-court"></p>
-        <div class="champs"></div>
-      </form>
-      <div class="resultats">
-        <div class="duo">
-          <div class="carte" id="carte-court"></div>
-          <div class="carte" id="carte-complet-rappel"></div>
-        </div>
-        <p class="note" id="comparaison"></p>
+    <!-- Version courte -->
+    <section class="mode" id="mode-court" hidden>
+      <div class="portrait">
+        <p class="consigne" id="consigne-court"></p>
+        <p class="phrase" id="phrase-court"></p>
+      </div>
+      <div class="article">
+        <section class="une comparaison">
+          <div class="chiffre-une">
+            <div class="surtitre">Version courte</div>
+            <div class="enorme" id="proba-court">–</div>
+          </div>
+          <div class="chiffre-une secondaire">
+            <div class="surtitre">Portrait complet</div>
+            <div class="enorme" id="proba-complet-rappel">–</div>
+          </div>
+        </section>
+        <aside class="note" id="note-court"></aside>
       </div>
     </section>
 
-    <section class="vue" id="vue-propos" hidden>
-      <div class="carte propos">
-        <ul>
-          <li><strong>Données :</strong> enquêtes Zindi « Financial Inclusion in Africa », 23 524 personnes, dont 14,08 % avec un compte.</li>
-          <li><strong>Tanzanie :</strong> les données d'entraînement sont corrigées <strong>en supposant vraie notre hypothèse</strong>
-            d'inversion des libellés de lieu et de statut marital. Aucune documentation ne la confirme.</li>
-          <li><strong>Échantillon :</strong> sans poids d'enquête, les résultats décrivent les personnes interrogées, pas la population de chaque pays.</li>
-          <li><strong>Limites :</strong> le modèle apprend des associations. Il ne dit pas ce qui arriverait si le profil d'une personne changeait.</li>
-          <li><strong>API :</strong> la documentation interactive est sur <a href="/docs">/docs</a>.</li>
-        </ul>
+    <!-- Méthode -->
+    <section class="mode" id="mode-methode" hidden>
+      <div class="article methode">
+        <h2>D'où viennent ces chiffres</h2>
+        <p class="texte">Les données viennent des enquêtes Zindi «&nbsp;Financial Inclusion in Africa&nbsp;»&nbsp;: 23 524 personnes,
+          dont 14,08&nbsp;% ont un compte bancaire. Chaque pays n'a été enquêté qu'une année, entre 2016 et 2018.</p>
+        <h2>Notre hypothèse sur la Tanzanie</h2>
+        <p class="texte">En Tanzanie, les libellés du lieu de vie et du statut marital semblent inversés. Les modèles apprennent sur des
+          données corrigées <strong>en supposant vraie cette hypothèse</strong>. Aucune documentation du jeu de données ne la confirme.
+          Les réponses saisies ici ne sont jamais modifiées.</p>
+        <h2>Ce que l'estimation ne dit pas</h2>
+        <p class="texte">Le modèle apprend des associations. Il ne dit pas ce qui arriverait si la situation d'une personne changeait.
+          Sans poids d'enquête, les résultats décrivent les personnes interrogées, pas la population de chaque pays.</p>
+        <p class="texte">Les développeurs peuvent interroger l'estimation directement&nbsp;: <a href="/docs">documentation de l'API</a>.</p>
       </div>
     </section>
   </main>
+
+  <footer>
+    <div class="frise" aria-hidden="true"></div>
+    <p>Projet de Data Science · IFRI · Données Zindi «&nbsp;Financial Inclusion in Africa&nbsp;»</p>
+  </footer>
+
+  <span class="mesure" id="mesure" aria-hidden="true"></span>
   <script src="/static/app.js"></script>
 </body>
 </html>
