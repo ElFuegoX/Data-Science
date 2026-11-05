@@ -1,7 +1,6 @@
-# Image de l'application pour un Space Hugging Face (SDK Docker) : l'API FastAPI sert aussi la page web.
+# Image de l'API pour Render. Elle sert aussi la page web, ce qui permet de tout lancer en local avec une seule commande.
 FROM python:3.12-slim
 
-# Hugging Face lance le conteneur avec l'utilisateur 1000.
 RUN useradd -m -u 1000 user
 USER user
 ENV PATH="/home/user/.local/bin:$PATH" PYTHONUNBUFFERED=1
@@ -17,5 +16,7 @@ COPY --chown=user web ./web
 COPY --chown=user data/original/Train.csv ./data/original/Train.csv
 COPY --chown=user models ./models
 
-EXPOSE 7860
-CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "7860"]
+# Render fournit le port dans la variable PORT.
+ENV PORT=10000
+EXPOSE 10000
+CMD uvicorn api.main:app --host 0.0.0.0 --port $PORT

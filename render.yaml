@@ -1,0 +1,13 @@
+# Service Render de l'API (Blueprint) : Render lit ce fichier et construit l'image à partir du Dockerfile.
+services:
+  - type: web
+    name: inclusion-financiere-api
+    runtime: docker
+    plan: free
+    branch: main
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/sante
+    autoDeploy: true
+    envVars:
+      - key: ORIGINES_AUTORISEES
+        value: "*"

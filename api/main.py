@@ -1,17 +1,19 @@
 """API de l'application : reçoit un profil, renvoie l'estimation et ses compléments. Sert aussi la page web.
 
 Lancer depuis la racine du dépôt : uvicorn api.main:app --reload
+En ligne : l'API tourne sur Render (Dockerfile, render.yaml) et la page sur Vercel (web/vercel.json).
 Documentation interactive : http://localhost:8000/docs
 """
 
 import importlib
+import os
 import sys
 from functools import lru_cache
 from pathlib import Path
 
 import pandas as pd
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 RACINE = Path(__file__).resolve().parents[1]
@@ -81,6 +83,20 @@ def profil_prepare(reponses):
 
 app = FastAPI(title="Inclusion financière en Afrique de l'Est", description="Probabilité d'avoir un compte bancaire en Afrique de l'Est.")
 
+# La page peut être servie par un autre site (Vercel) : on autorise ses appels. L'API ne fait que lire, sans cookies.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=os.environ.get("ORIGINES_AUTORISEES", "*").split(","),
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type"],
+)
+
+
+@app.get("/api/sante")
+def sante():
+    """Répond dès que le serveur est prêt : sert au contrôle de Render et au réveil depuis la page."""
+    return {"statut": "ok"}
+
 
 @app.get("/api/referentiel")
 def lire_referentiel():
@@ -136,9 +152,5 @@ def estimer_court(reponses: dict):
     return {"probabilite": float(predire_court(profil_prepare(reponses)))}
 
 
-app.mount("/static", StaticFiles(directory=WEB), name="static")
-
-
-@app.get("/", include_in_schema=False)
-def page():
-    return FileResponse(WEB / "index.html")
+# En dernier : la page et ses fichiers, servis à la racine. Les routes de l'API ci-dessus restent prioritaires.
+app.mount("/", StaticFiles(directory=WEB, html=True), name="page")

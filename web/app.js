@@ -73,6 +73,29 @@ function mot(variable, valeur, genre) {
   return forme ?? etat.ref.libelles[valeur] ?? valeur;
 }
 
+// Render endort le serveur gratuit après un moment sans visite : le premier appel peut prendre jusqu'à une minute.
+async function reveiller() {
+  const message = document.getElementById("provisoire");
+  const debut = Date.now();
+  const attente = setTimeout(() => {
+    message.textContent = "Le serveur se réveille, cela peut prendre jusqu'à une minute…";
+    message.hidden = false;
+  }, 2500);
+  try {
+    while (true) {
+      try {
+        const reponse = await fetch("/api/sante", { cache: "no-store" });
+        if (reponse.ok) return;
+      } catch (erreur) { /* serveur encore endormi */ }
+      if (Date.now() - debut > 120000) throw new Error("le serveur ne répond pas. Réessayez dans une minute.");
+      await new Promise((fin) => setTimeout(fin, 4000));
+    }
+  } finally {
+    clearTimeout(attente);
+    message.hidden = true;
+  }
+}
+
 async function appeler(chemin, corps) {
   const reponse = await fetch(chemin, corps ? {
     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(corps),
@@ -283,6 +306,7 @@ function brancherModes() {
 
 async function demarrer() {
   try {
+    await reveiller();
     etat.ref = await appeler("/api/referentiel");
   } catch (erreur) {
     document.querySelector("main").innerHTML = `<div class="erreur">Impossible de joindre l'API : ${echapper(erreur.message)}</div>`;

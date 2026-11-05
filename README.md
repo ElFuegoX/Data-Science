@@ -13,8 +13,8 @@ notebooks/       01_eda, 02_preparation, 03_decoupage, puis la modélisation
 src/             code réutilisable : preparation.py, decoupage.py
 instructions/    tâches de modélisation de chaque membre
 models/          modèles sauvegardés (à venir)
-api/             API FastAPI, qui sert aussi la page : uvicorn api.main:app --reload
-web/             page HTML/CSS/JS de l'application
+api/             API FastAPI, qui sert aussi la page en local : uvicorn api.main:app --reload
+web/             page HTML/CSS/JS de l'application, publiée sur Vercel
 app/             première interface Streamlit et fonctions provisoires
 ```
 
@@ -35,6 +35,11 @@ pip install -r requirements.txt
 Ouvrir les notebooks de `notebooks/` et exécuter les cellules dans l'ordre.
 
 **Hypothèse sur la Tanzanie :** `src/preparation.py` corrige `location_type` et `marital_status` en Tanzanie, en supposant vraie notre hypothèse d'inversion des libellés. Aucune documentation du jeu de données ne la confirme (voir l'EDA, sections 3.7 et 3.8).
+
+## Mise en ligne
+
+- **API sur Render :** `render.yaml` décrit le service, construit à partir du `Dockerfile`. Render redéploie à chaque push sur `main`. L'offre gratuite endort le serveur après un moment sans visite : le premier appel peut prendre jusqu'à une minute, et la page l'indique.
+- **Page sur Vercel :** projet dont le dossier racine est `web/`. `web/vercel.json` renvoie `/api/...` et `/docs` vers l'API Render.
 
 ## Avancement
 
