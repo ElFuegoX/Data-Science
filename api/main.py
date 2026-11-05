@@ -30,9 +30,17 @@ WEB = RACINE / "web"
 
 
 def fonction(module, nom):
-    """Prend la vraie fonction si son fichier existe dans src/, sinon la version provisoire."""
+    """Prend la vraie fonction si son module existe dans src/ et que son modèle enregistré est présent dans models/.
+
+    Sinon, la version provisoire : un module livré sans son fichier .joblib ne doit pas faire tomber la page.
+    """
     try:
-        return getattr(importlib.import_module(f"src.{module}"), nom), True
+        source = importlib.import_module(f"src.{module}")
+        chemin = getattr(source, "CHEMIN_MODELE", None)
+        if chemin is not None and not Path(chemin).exists():
+            print(f"Modèle absent ({chemin}) : version provisoire utilisée pour {nom}.")
+            return getattr(provisoire, nom), False
+        return getattr(source, nom), True
     except (ImportError, AttributeError):
         return getattr(provisoire, nom), False
 
