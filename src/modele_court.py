@@ -17,18 +17,16 @@ from sklearn.model_selection import StratifiedKFold, cross_val_predict
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import FunctionTransformer, OneHotEncoder, StandardScaler
 
+# Les tranches d'âge sont partagées avec le modèle principal. L'import reste ici pour relire models/modele_court.joblib,
+# enregistré quand decouper_age était défini dans ce fichier.
+from src.encodage import BORNES_AGE, decouper_age  # noqa: F401
+
 RACINE = Path(__file__).resolve().parents[1]  # racine du dépôt, calculée comme dans decoupage.py
 CHEMIN_MODELE = RACINE / "models" / "modele_court.joblib"
 
 VARIABLES_COURTES = ["job_type", "education_level", "country"]  # à remettre dans l'ordre du formulaire (voir Joanès)
 
-BORNES_AGE = [25, 35, 45, 55, 65]  # tranches : moins de 25, 25-34, 35-44, 45-54, 55-64, 65 et plus
 NUMERIQUES = ["age_of_respondent", "household_size"]
-
-
-def decouper_age(colonne):
-    """Remplace chaque âge par le numéro de sa tranche (0 à 5)."""
-    return np.digitize(colonne, BORNES_AGE)
 
 
 def construire_modele(variables):

@@ -1,4 +1,26 @@
-"""Modèle principal : probabilité de possession d'un compte bancaire."""
+"""Modèle principal : probabilité de possession d'un compte bancaire.
+
+À FAIRE (Oscar) : viser 0,80 de F1 macro. Point de départ : 0,743 en validation, 0,732 sur le test.
+
+1. Seuil par pays : choisir un seuil pour chacun des 4 pays par validation croisée, dans entrainer(),
+   et l'enregistrer dans l'objet (par exemple "seuils": {"Kenya": ..., ...}). Les taux de comptes vont de 8,6 % à 25 %.
+2. Boosting : ajouter CatBoost avec cat_features (VARIABLES_CATEGORIELLES), et essayer auto_class_weights="Balanced".
+   Le HistGradientBoosting faisait déjà 0,746 en validation.
+3. Optuna (100 essais ou plus) sur CatBoost : depth, learning_rate, l2_leaf_reg, iterations, one_hot_max_size.
+   Chaque essai est noté par le F1 macro en validation croisée à 5 plis sur X_ent.
+4. Interactions pour la logistique : pays × téléphone, pays × lieu, pays × éducation, éducation × emploi.
+5. Combinaison : moyenne pondérée des probabilités de CatBoost, HistGradientBoosting et logistique, poids choisis
+   par validation croisée ; puis stacking (une petite logistique qui apprend à combiner les trois).
+6. Modèle déployé : entrainer(pd.concat([X_ent, X_val]), pd.concat([y_ent, y_val])), seuils et poids fixés par
+   validation croisée, puis joblib.dump vers CHEMIN_MODELE.
+7. Facteurs du score : si le boosting est retenu, utiliser les valeurs SHAP de CatBoost
+   (get_feature_importance(type="ShapValues")), converties en points de probabilité comme dans expliquer().
+   Garder les noms entrainer, predire, expliquer : l'interface les appelle.
+8. Tous les choix par validation croisée ; le test une seule fois, à la fin.
+
+Ajouter catboost==1.2.10 et optuna==4.9.0 à requirements.txt, et catboost==1.2.10 à requirements-app.txt si retenu.
+Partager avec Loan ce qui marche (seuils par pays, réglages de CatBoost) : il vise aussi 0,80.
+"""
 
 from functools import lru_cache
 from pathlib import Path
@@ -15,7 +37,7 @@ from sklearn.model_selection import StratifiedKFold, cross_val_predict
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import FunctionTransformer, OneHotEncoder, StandardScaler
 
-from src.modele_court import decouper_age
+from src.encodage import decouper_age
 
 RACINE = Path(__file__).resolve().parents[1]
 CHEMIN_MODELE = RACINE / "models" / "modele_principal.joblib"
