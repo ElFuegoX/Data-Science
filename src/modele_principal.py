@@ -1,5 +1,6 @@
 """Modèle principal : probabilité de possession d'un compte bancaire."""
 
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -122,10 +123,26 @@ def entrainer(X: pd.DataFrame, y: pd.Series) -> dict[str, Any]:
     )[:, 1]
     seuil, _ = meilleur_seuil(cible, probabilites_cv)
     modele.fit(X[VARIABLES], cible)
-    return {"modele": modele, "seuil": seuil, "variables": list(VARIABLES)}
+    return {
+        "modele": modele,
+        "seuil": seuil,
+        "variables": list(VARIABLES),
+        "moyenne_encodee": moyenne_encodee(modele, X[VARIABLES]),
+    }
 
 
+def moyenne_encodee(modele: Pipeline, X: pd.DataFrame) -> np.ndarray:
+    """Profil moyen des données d'entraînement, une fois encodé : la référence des facteurs du score."""
+    encodees = modele.named_steps["preparation"].transform(X)
+    return np.asarray(encodees.mean(axis=0)).ravel()
+
+
+@lru_cache(maxsize=1)
 def _charger_modele() -> dict[str, Any]:
+    """Lit le modèle enregistré une seule fois, puis le garde en mémoire.
+
+    Après un réentraînement dans le même processus, appeler _charger_modele.cache_clear() pour relire le fichier.
+    """
     return joblib.load(CHEMIN_MODELE)
 
 
@@ -148,17 +165,27 @@ def predire(profil: pd.DataFrame) -> float:
 
 
 def expliquer(profil: pd.DataFrame) -> pd.DataFrame:
-    """Renvoie les contributions logistiques par variable, triées par effet absolu."""
+    """Effet de chaque réponse sur la probabilité, en points (0,05 = 5 points), trié par effet absolu.
+
+    Pour chaque variable, on compare la probabilité du profil à celle obtenue en ramenant cette seule variable
+    au profil moyen de l'entraînement. Un effet positif fait monter le score par rapport à une personne moyenne
+    sur cette variable ; un effet négatif le fait baisser. Ce sont des appuis du modèle, pas des causes.
+    """
     objet = _charger_modele()
+    if "moyenne_encodee" not in objet:
+        raise ValueError("Modèle enregistré sans 'moyenne_encodee' : le réenregistrer avec entrainer().")
     valeurs = _profil_valide(profil, objet["variables"])
     modele = objet["modele"]
     preparation = modele.named_steps["preparation"]
+    regression = modele.named_steps["modele"]
     variables_encodees = preparation.transform(valeurs)
     if sparse.issparse(variables_encodees):
         variables_encodees = variables_encodees.toarray()
 
     noms_encodees = preparation.get_feature_names_out()
-    effets = variables_encodees[0] * modele.named_steps["modele"].coef_[0]
+    logit = float(regression.decision_function(variables_encodees)[0])
+    probabilite = 1 / (1 + np.exp(-logit))
+    ecarts = (variables_encodees[0] - objet["moyenne_encodee"]) * regression.coef_[0]
     lignes = []
     for variable in objet["variables"]:
         positions = [
@@ -168,10 +195,11 @@ def expliquer(profil: pd.DataFrame) -> pd.DataFrame:
         ]
         if not positions:
             raise ValueError(f"Aucune caractéristique encodée ne correspond à {variable}.")
+        logit_moyen = logit - ecarts[positions].sum()  # même profil, cette variable ramenée à la moyenne
         lignes.append(
             {
                 "variable": variable,
-                "contribution": float(effets[positions].sum()),
+                "contribution": float(probabilite - 1 / (1 + np.exp(-logit_moyen))),
             }
         )
 
