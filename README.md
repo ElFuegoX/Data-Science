@@ -9,8 +9,9 @@ Les données viennent de la compétition [Financial Inclusion in Africa](https:/
 ```
 data/original/   données d'origine, jamais modifiées
 docs/            cadrage, énoncé du TP, notebook de départ Zindi
-notebooks/       01_eda, 02_preparation, puis la modélisation
-src/             code réutilisable : preparation.py
+notebooks/       01_eda, 02_preparation, 03_decoupage, puis la modélisation
+src/             code réutilisable : preparation.py, decoupage.py
+instructions/    tâches de modélisation de chaque membre
 models/          modèles sauvegardés (à venir)
 api/             interface (à venir)
 ```
@@ -38,5 +39,6 @@ Ouvrir les notebooks de `notebooks/` et exécuter les cellules dans l'ordre.
 - [x] Cadrage : [docs/01_cadrage.md](docs/01_cadrage.md)
 - [x] Analyse exploratoire : [notebooks/01_eda.ipynb](notebooks/01_eda.ipynb)
 - [x] Préparation des données : [notebooks/02_preparation.ipynb](notebooks/02_preparation.ipynb)
-- [ ] Modélisation
+- [x] Découpage commun 70/15/15 et référence naïve : [notebooks/03_decoupage.ipynb](notebooks/03_decoupage.ipynb)
+- [ ] Modélisation : modèle principal (Oscar), KNN (Félicité), modèle court (Loan). Voir [instructions/](instructions/)
 - [ ] Interface, déploiement et réentraînement automatique
