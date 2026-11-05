@@ -22,12 +22,6 @@ a { color: var(--indigo-texte); text-underline-offset: 3px; }
 h1, h2 { font-family: var(--serif-titre); font-weight: 600; letter-spacing: -0.02em; margin: 0; }
 h2 { font-size: 1.5rem; margin-bottom: 1rem; }
 
-/* Frise inspirée des tissus kanga */
-.frise {
-  height: 14px;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='14'%3E%3Cpath d='M0 14 7 0 14 14Z' fill='%23c4572e'/%3E%3Cpath d='M14 0h14L21 14Z' fill='%23d49a2a'/%3E%3Cpath d='M28 14 35 0 42 14Z' fill='%232f3e6e'/%3E%3Cpath d='M42 0h14L49 14Z' fill='%236b7f3a'/%3E%3C/svg%3E") repeat-x;
-}
-
 /* En-tête */
 .tete { max-width: 1080px; margin: 0 auto; padding: 3.5rem 2rem 1.5rem; }
 .marque { font: 700 0.78rem var(--sans); letter-spacing: 0.14em; text-transform: uppercase; color: var(--terre); }
@@ -130,9 +124,6 @@ input.trou::-webkit-inner-spin-button, input.trou::-webkit-outer-spin-button { -
 .methode h2 { margin-top: 1.6rem; font-size: 1.3rem; }
 .erreur { background: #f8e1d8; border-left: 3px solid var(--terre); padding: 0.8rem 1rem; font: 500 0.9rem var(--sans); }
 
-footer { margin-top: 2rem; }
-footer p { max-width: 1080px; margin: 0 auto; padding: 1.2rem 2rem 2rem; font: 500 0.8rem var(--sans); color: var(--brun); }
-
 @media (max-width: 820px) {
   body { font-size: 1.05rem; }
   .tete { padding: 2.2rem 1rem 1rem; }
@@ -143,5 +134,4 @@ footer p { max-width: 1080px; margin: 0 auto; padding: 1.2rem 2rem 2rem; font: 5
   .facteur { grid-template-columns: 1fr; gap: 0.25rem; }
   .facteur .nom { text-align: left; font-size: 0.95rem; }
   .point-ligne { grid-template-columns: 5.8rem 1fr 2.8rem; }
-  footer p { padding: 1rem; }
 }
