@@ -149,30 +149,86 @@ def note(texte):
     st.caption(texte)
 
 
-st.set_page_config(page_title="Inclusion financière", page_icon="🏦", layout="wide")
-st.markdown("""<style>
-.block-container {padding-top: 2.2rem; max-width: 1250px}
-h1 {font-size: 2rem !important}
-h3 {font-size: 1.1rem !important; margin-top: 0.4rem}
+st.set_page_config(page_title="Mtaa · Inclusion financière", page_icon="🏦", layout="wide",
+                   initial_sidebar_state="collapsed")
+st.markdown(f"""<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+:root {{
+    --ink: #17212b;
+    --muted: #66737f;
+    --blue: {BLEU};
+    --orange: {ORANGE};
+    --line: #e8edf2;
+    --surface: #ffffff;
+}}
+.stApp {{ background: #f5f8fb; color: var(--ink); }}
+.block-container {{ padding: 1.8rem 3rem 4rem; max-width: 1440px; }}
+html, body, [class*="css"] {{ font-family: 'DM Sans', sans-serif; }}
+h1, h2, h3 {{ font-family: 'Space Grotesk', sans-serif !important; color: var(--ink); }}
+h1 {{ font-size: clamp(2rem, 3.8vw, 3.35rem) !important; letter-spacing: -0.055em; line-height: 1.05 !important; }}
+h2 {{ letter-spacing: -0.03em; }}
+h3 {{ font-size: 1.05rem !important; margin-top: 0.4rem; }}
+[data-testid="stHeader"] {{ background: transparent; }}
+[data-testid="stToolbar"] {{ visibility: hidden; }}
+[data-testid="stVerticalBlockBorderWrapper"] {{
+    background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+    box-shadow: 0 8px 30px rgba(28, 54, 80, 0.045);
+}}
+[data-testid="stMetric"] {{ background: #f8fafc; border-radius: 14px; padding: 1rem; }}
+[data-testid="stTabs"] button {{ font-weight: 600; color: var(--muted); }}
+[data-testid="stTabs"] button[aria-selected="true"] {{ color: var(--blue); }}
+[data-testid="stSegmentedControl"] {{ background: #f2f5f8; border-radius: 10px; padding: 3px; }}
+.eyebrow {{ color: var(--blue); font-size: .75rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; margin-bottom: .8rem; }}
+.hero {{ padding: .5rem 0 1.6rem; }}
+.hero-copy {{ max-width: 770px; color: var(--muted); font-size: 1.05rem; line-height: 1.65; }}
+.hero-badge {{ display: inline-flex; gap: .45rem; align-items: center; padding: .5rem .75rem; border-radius: 999px;
+    background: #e9f2ff; color: #2364ae; font-size: .78rem; font-weight: 700; margin-bottom: 1rem; }}
+.section-kicker {{ color: var(--muted); font-size: .82rem; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; }}
+.hero-stat {{ background: var(--ink); color: white; border-radius: 20px; padding: 1.4rem 1.5rem; min-height: 150px;
+    display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 14px 28px rgba(23, 33, 43, .14); }}
+.hero-stat-label {{ color: #b7c5d2; font-size: .76rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }}
+.hero-stat-value {{ font-family: 'Space Grotesk', sans-serif; font-size: 2.7rem; font-weight: 700; letter-spacing: -.06em; }}
+.hero-stat-note {{ color: #b7c5d2; font-size: .78rem; }}
+[data-testid="stAlert"] {{ border-radius: 12px; padding: .65rem 1rem; margin-bottom: 1.25rem; }}
+[data-testid="stAlert"] p {{ font-size: .82rem; }}
+@media (max-width: 800px) {{
+    .block-container {{ padding: 1.25rem 1rem 3rem; }}
+    .hero {{ padding-bottom: 1.25rem; }}
+}}
 </style>""", unsafe_allow_html=True)
 
-st.title("Qui a un compte bancaire en Afrique de l'Est ?")
-st.caption("Décrivez un profil : l'application estime la probabilité d'avoir un compte, d'après les enquêtes Zindi "
-           "au Kenya, au Rwanda, en Tanzanie et en Ouganda (23 524 personnes).")
+st.markdown("""<div class="hero">
+<div class="hero-badge">🏦  DATA STORY · AFRIQUE DE L'EST</div>
+</div>""", unsafe_allow_html=True)
+intro, reference = st.columns([0.72, 0.28], gap="large", vertical_alignment="center")
+with intro:
+    st.markdown("""<div class="eyebrow">Mtaa / Inclusion financière</div>
+<h1>Comprendre l'accès<br>au compte bancaire.</h1>
+<p class="hero-copy">Décrivez un profil pour obtenir une estimation transparente, fondée sur
+23&nbsp;524 personnes enquêtées au Kenya, au Rwanda, en Tanzanie et en Ouganda.</p>""",
+                unsafe_allow_html=True)
+with reference:
+    st.markdown(f"""<div class="hero-stat">
+<div class="hero-stat-label">Dans l'échantillon</div>
+<div class="hero-stat-value">{pourcentage(TAUX_GLOBAL)}</div>
+<div class="hero-stat-note">des personnes ont un compte bancaire</div>
+</div>""", unsafe_allow_html=True)
 
 provisoires = [nom for nom, vrai in [("modèle principal", vrai_principal), ("KNN", vrai_knn), ("modèle court", vrai_court)] if not vrai]
 if provisoires:
     st.warning(f"Version de démonstration : résultats provisoires pour {', '.join(provisoires)}. "
                "Ce sont de simples taux observés par groupe, en attendant les vrais modèles.", icon="🚧")
 
-onglet_complet, onglet_court, onglet_propos = st.tabs(["Profil complet", "Moins de questions", "À propos"])
+onglet_complet, onglet_court, onglet_propos = st.tabs(["✦  Profil complet", "⚡  Estimation rapide", "ⓘ  À propos"])
 
 with onglet_complet:
     gauche, droite = st.columns([0.36, 0.64], gap="large")
 
     with gauche:
         with st.container(border=True):
-            st.subheader("Profil")
+            st.markdown('<div class="section-kicker">Étape 01 · Votre profil</div>', unsafe_allow_html=True)
+            st.subheader("Quelques questions")
+            st.caption("Les réponses servent uniquement à calculer l'estimation ci-contre.")
             reponses = formulaire(QUESTIONS, "complet")
 
     profil = profil_prepare(reponses)
@@ -233,7 +289,9 @@ with onglet_complet:
 with onglet_court:
     gauche, droite = st.columns([0.36, 0.64], gap="large")
     with gauche, st.container(border=True):
-        st.subheader(f"{len(VARIABLES_COURTES)} questions au lieu de {len(QUESTIONS)}")
+        st.markdown('<div class="section-kicker">Mode express</div>', unsafe_allow_html=True)
+        st.subheader(f"{len(VARIABLES_COURTES)} questions")
+        st.caption(f"Une estimation plus rapide, avec {len(QUESTIONS) - len(VARIABLES_COURTES)} réponses en moins.")
         reponses_courtes = formulaire(VARIABLES_COURTES, "court")
     probabilite_courte = predire_court(profil_prepare(reponses_courtes))
     with droite:

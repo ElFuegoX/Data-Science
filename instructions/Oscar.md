@@ -33,12 +33,40 @@ Dans `notebooks/04_modele_principal.ipynb` :
 1. **Régression logistique.** Refais celle de ton EDA, mais sur les données du socle.
    - Encode les catégorielles en one-hot, éducation comprise (décision 9 : pas d'échelle ordonnée).
    - Donne à l'âge une forme qui permet une relation non linéaire, par exemple des tranches (décision 10).
-2. **Gradient boosting.** Prends par exemple `HistGradientBoostingClassifier` de scikit-learn. Il capte les interactions pays × téléphone et pays × lieu vues dans l'EDA (décision 14).
-3. **Seuil.** Pour chaque modèle, choisis le seuil qui maximise le F1 macro sur la validation. Ne garde pas 0,5 par défaut (décision 18).
+2. **CatBoost.** C'est le meilleur des modèles à arbres testés (0,737 en validation croisée, contre 0,735 pour `HistGradientBoostingClassifier` et 0,731 pour LightGBM). Donne-lui les catégorielles avec `cat_features`. Il capte les interactions pays × téléphone et pays × lieu vues dans l'EDA (décision 14).
+3. **Seuil.** Pour chaque modèle, choisis le seuil qui maximise le F1 macro. Ne garde pas 0,5 par défaut (décision 18). Dans `entrainer()`, choisis-le par validation croisée sur les données reçues, comme Loan dans `src/modele_court.py`.
 4. **Comparaison.** Mets côte à côte les deux modèles et la référence naïve, avec `evaluer()`. Commente les écarts entre pays et entre genres (décisions 19 et 20).
 5. **Vérification de `job_type`.** Vérifie que le modèle ne tire pas une fausse différence entre pays du codage de `job_type` (décision 15). Par exemple, compare la prédiction d'un même profil `Self employed` d'un pays à l'autre.
 6. **Facteurs du score.** Pour un profil, donne les variables qui poussent le score vers le haut ou vers le bas. Utilise les coefficients pour la logistique, ou SHAP pour le boosting. Si tu utilises SHAP, ajoute-le à `requirements.txt` avec sa version.
 7. **Évaluation finale.** Évalue le modèle retenu une seule fois sur le test final, et écris ce chiffre dans le notebook.
+
+## Objectif : viser 0,80 de F1 macro
+
+Des essais préalables, en validation croisée sur entraînement + validation, donnent entre 0,731 et 0,737 pour tous les modèles, de la logistique à CatBoost. Le plafond de ces données est estimé à 0,80 environ au mieux : 6,7 % des personnes ont un jumeau aux mêmes réponses et au résultat inverse. On vise 0,80 ; 0,75 à 0,76 serait déjà un très bon résultat.
+
+Pistes, de la plus prometteuse à la moins prometteuse :
+
+1. **Un seuil par pays.** Les taux de comptes vont de 8,6 % en Ouganda à 25 % au Kenya : un seuil unique ne convient à aucun pays. Choisis un seuil par pays par validation croisée. Gain attendu : 0,01 à 0,02.
+2. **Réglage de CatBoost avec Optuna**, par validation croisée sur `X_ent` seulement. Gain attendu : environ 0,005.
+3. **Moyenne des probabilités de CatBoost et de la logistique.** Garde-la seulement si elle fait mieux en validation.
+
+Ajoute `catboost==1.2.10` et `optuna==4.9.0` à `requirements.txt`, et `catboost==1.2.10` à `requirements-app.txt` si CatBoost est retenu.
+
+**Interdit :** utiliser le test pour choisir ou régler quoi que ce soit. C'est la seule façon d'« atteindre » 0,80, et c'est tricher.
+
+## Modèle déployé (décision du groupe)
+
+1. **Évaluer** comme décrit plus haut : apprendre sur `X_ent`, choisir sur `X_val`, puis passer une seule fois sur `X_test`. Ce chiffre va dans le rapport.
+2. **Enregistrer le modèle déployé** en l'entraînant sur entraînement + validation (85 %) :
+   ```python
+   import pandas as pd
+   objet = entrainer(pd.concat([X_ent, X_val]), pd.concat([y_ent, y_val]))
+   ```
+   Avec CatBoost ou la logistique, le seuil (ou les seuils par pays) est choisi par validation croisée dans `entrainer()`.
+   Le test reste fermé : on n'apprend jamais dessus.
+3. **Écrire dans le notebook** : « le modèle déployé apprend sur 85 % des données ; sa performance attendue est celle mesurée sur le test avec le modèle à 70 % ».
+
+Le réentraînement automatique suivra la même règle : `entrainer()` recevra toutes les données disponibles, et la nouvelle version ne remplacera l'ancienne que si elle fait mieux sur le test.
 
 ## Ce que tu livres pour l'interface
 

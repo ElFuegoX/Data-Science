@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^python -c \"import streamlit, altair, pandas; print\\('imports ok'\\)\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

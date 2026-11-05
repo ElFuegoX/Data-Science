@@ -38,6 +38,20 @@ Dans `notebooks/06_modele_court.ipynb` :
 6. **Écarts selon les groupes.** Avec `evaluer()`, regarde si le modèle court perd plus dans un pays ou pour un genre que dans les autres.
 7. **Évaluation finale.** Évalue une seule fois sur le test final, avec le modèle court retenu.
 
+## Modèle déployé (décision du groupe)
+
+1. **Évaluer** comme décrit plus haut : apprendre sur `X_ent`, choisir sur `X_val`, puis passer une seule fois sur `X_test`. Ce chiffre va dans le rapport.
+2. **Enregistrer le modèle déployé** en l'entraînant sur entraînement + validation (85 %) :
+   ```python
+   import pandas as pd
+   objet = entrainer(pd.concat([X_ent, X_val]), pd.concat([y_ent, y_val]))
+   ```
+   Ton `entrainer()` choisit déjà son seuil par validation croisée : il suffit de le rappeler sur les 85 % et de réenregistrer `models/modele_court.joblib`. Le modèle enregistré aujourd'hui n'apprend que sur `X_ent`.
+   Le test reste fermé : on n'apprend jamais dessus.
+3. **Écrire dans le notebook** : « le modèle déployé apprend sur 85 % des données ; sa performance attendue est celle mesurée sur le test avec le modèle à 70 % ».
+
+Le réentraînement automatique suivra la même règle : `entrainer()` recevra toutes les données disponibles, et la nouvelle version ne remplacera l'ancienne que si elle fait mieux sur le test.
+
 ## Ce que tu livres pour l'interface
 
 Joanès branche l'interface sur ces fonctions. Respecte exactement les noms.
