@@ -1,8 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
-    { "source": "/api/:chemin*", "destination": "https://inclusion-financiere-api.onrender.com/api/:chemin*" },
-    { "source": "/docs", "destination": "https://inclusion-financiere-api.onrender.com/docs" },
-    { "source": "/openapi.json", "destination": "https://inclusion-financiere-api.onrender.com/openapi.json" }
+    { "source": "/api/:chemin*", "destination": "https://data-science-xvcv.onrender.com/api/:chemin*" },
+    { "source": "/docs", "destination": "https://data-science-xvcv.onrender.com/docs" },
+    { "source": "/openapi.json", "destination": "https://data-science-xvcv.onrender.com/openapi.json" }
   ]
 }
