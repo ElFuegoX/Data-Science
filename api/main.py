@@ -79,7 +79,7 @@ def profil_prepare(reponses):
     return preparer(pd.DataFrame([reponses]), corriger=False)
 
 
-app = FastAPI(title="Mtaa · Inclusion financière", description="Probabilité d'avoir un compte bancaire en Afrique de l'Est.")
+app = FastAPI(title="Inclusion financière en Afrique de l'Est", description="Probabilité d'avoir un compte bancaire en Afrique de l'Est.")
 
 
 @app.get("/api/referentiel")

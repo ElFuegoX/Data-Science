@@ -24,9 +24,7 @@ h2 { font-size: 1.5rem; margin-bottom: 1rem; }
 
 /* En-tête */
 .tete { max-width: 1080px; margin: 0 auto; padding: 3.5rem 2rem 1.5rem; }
-.marque { font: 700 0.78rem var(--sans); letter-spacing: 0.14em; text-transform: uppercase; color: var(--terre); }
-.marque span { color: var(--ocre); }
-h1 { font-size: clamp(2.6rem, 7vw, 5.2rem); font-weight: 800; line-height: 0.98; letter-spacing: -0.04em; margin: 1rem 0 1.4rem; }
+h1 { font-size: clamp(2.6rem, 7vw, 5.2rem); font-weight: 800; line-height: 0.98; letter-spacing: -0.04em; margin: 0 0 1.4rem; }
 .chapo { font-size: 1.35rem; line-height: 1.5; max-width: 46rem; margin: 0; }
 .chapo strong { color: var(--terre); font-weight: 500; }
 
