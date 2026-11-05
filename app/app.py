@@ -109,7 +109,7 @@ def profil_prepare(reponses):
 
 
 def pourcentage(valeur):
-    return f"{valeur:.0%}".replace("%", "00a0%")
+    return f"{valeur:.0%}".replace("%", " %")
 
 
 def jauge(titre, valeur, sous_titre):
