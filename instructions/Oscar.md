@@ -40,14 +40,6 @@ Dans `notebooks/04_modele_principal.ipynb` :
 6. **Facteurs du score.** Pour un profil, donne les variables qui poussent le score vers le haut ou vers le bas. Utilise les coefficients pour la logistique, ou SHAP pour le boosting. Si tu utilises SHAP, ajoute-le à `requirements.txt` avec sa version.
 7. **Évaluation finale.** Évalue le modèle retenu une seule fois sur le test final, et écris ce chiffre dans le notebook.
 
-## Partage avec Loan
-
-**Loan pousse la performance du modèle principal vers 0,80 de F1 macro** (voir `instructions/Loan.md`). Toi, tu construis le modèle de base, les facteurs du score et `src/modele_principal.py`.
-
-- Livre d'abord ta version de `src/modele_principal.py`, qui respecte le contrat ci-dessous : Loan part de ton code.
-- Loan cherche ensuite la meilleure configuration dans son propre notebook. Quand il la trouve, il modifie seulement `entrainer()` dans `src/modele_principal.py`, après accord avec toi.
-- `expliquer()` doit continuer à fonctionner avec le modèle retenu : vérifiez-le ensemble.
-
 ## Modèle déployé (décision du groupe)
 
 1. **Évaluer** comme décrit plus haut : apprendre sur `X_ent`, choisir sur `X_val`, puis passer une seule fois sur `X_test`. Ce chiffre va dans le rapport.
