@@ -94,7 +94,7 @@ def entrainer(X, y, k=25, seuil=0.5):
         "encodeur": encodeur,
         "X_enc": X_enc,
         "y": y,
-        "pays": pays,
+        "pays": pays.to_numpy(dtype=object),  # tableau simple : un Series pandas exigerait pyarrow pour être relu
         "nn_global": nn_global,
         "index_pays": index_pays,
         "k": k,
