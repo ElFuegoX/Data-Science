@@ -5,6 +5,7 @@ en supposant notre hypothèse vraie. Un profil saisi dans le formulaire doit pas
 preparer(corriger=False) avant d'être donné à predire_court.
 """
 
+from functools import lru_cache
 from pathlib import Path
 
 import joblib
@@ -78,8 +79,17 @@ def entrainer(X, y):
     return {"modele": modele, "seuil": round(float(seuil), 2), "variables": list(VARIABLES_COURTES)}  # seuil arrondi à 2 décimales
 
 
+@lru_cache(maxsize=1)
+def charger_modele():
+    """Lit le modèle enregistré une seule fois, puis le garde en mémoire.
+
+    Après un réentraînement dans le même processus, appeler charger_modele.cache_clear() pour relire le fichier.
+    """
+    return joblib.load(CHEMIN_MODELE)
+
+
 def predire_court(profil):
     """profil : DataFrame d'une ligne qui contient au moins VARIABLES_COURTES. Renvoie la probabilité (float)."""
-    objet = joblib.load(CHEMIN_MODELE)  # charge le modèle enregistré
+    objet = charger_modele()  # modèle enregistré, lu une seule fois
     probabilite = objet["modele"].predict_proba(profil[objet["variables"]])[:, 1][0]
     return float(probabilite)
