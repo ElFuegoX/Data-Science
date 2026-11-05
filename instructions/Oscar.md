@@ -40,19 +40,13 @@ Dans `notebooks/04_modele_principal.ipynb` :
 6. **Facteurs du score.** Pour un profil, donne les variables qui poussent le score vers le haut ou vers le bas. Utilise les coefficients pour la logistique, ou SHAP pour le boosting. Si tu utilises SHAP, ajoute-le à `requirements.txt` avec sa version.
 7. **Évaluation finale.** Évalue le modèle retenu une seule fois sur le test final, et écris ce chiffre dans le notebook.
 
-## Objectif : viser 0,80 de F1 macro
+## Partage avec Loan
 
-Des essais préalables, en validation croisée sur entraînement + validation, donnent entre 0,731 et 0,737 pour tous les modèles, de la logistique à CatBoost. Le plafond de ces données est estimé à 0,80 environ au mieux : 6,7 % des personnes ont un jumeau aux mêmes réponses et au résultat inverse. On vise 0,80 ; 0,75 à 0,76 serait déjà un très bon résultat.
+**Loan pousse la performance du modèle principal vers 0,80 de F1 macro** (voir `instructions/Loan.md`). Toi, tu construis le modèle de base, les facteurs du score et `src/modele_principal.py`.
 
-Pistes, de la plus prometteuse à la moins prometteuse :
-
-1. **Un seuil par pays.** Les taux de comptes vont de 8,6 % en Ouganda à 25 % au Kenya : un seuil unique ne convient à aucun pays. Choisis un seuil par pays par validation croisée. Gain attendu : 0,01 à 0,02.
-2. **Réglage de CatBoost avec Optuna**, par validation croisée sur `X_ent` seulement. Gain attendu : environ 0,005.
-3. **Moyenne des probabilités de CatBoost et de la logistique.** Garde-la seulement si elle fait mieux en validation.
-
-Ajoute `catboost==1.2.10` et `optuna==4.9.0` à `requirements.txt`, et `catboost==1.2.10` à `requirements-app.txt` si CatBoost est retenu.
-
-**Interdit :** utiliser le test pour choisir ou régler quoi que ce soit. C'est la seule façon d'« atteindre » 0,80, et c'est tricher.
+- Livre d'abord ta version de `src/modele_principal.py`, qui respecte le contrat ci-dessous : Loan part de ton code.
+- Loan cherche ensuite la meilleure configuration dans son propre notebook. Quand il la trouve, il modifie seulement `entrainer()` dans `src/modele_principal.py`, après accord avec toi.
+- `expliquer()` doit continuer à fonctionner avec le modèle retenu : vérifiez-le ensemble.
 
 ## Modèle déployé (décision du groupe)
 

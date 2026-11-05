@@ -78,6 +78,26 @@ Fichier `models/modele_court.joblib` : l'objet produit par `entrainer`, enregist
 - Si une enquête plus courte coûterait moins cher, cela reste une hypothèse du cadrage.
 - Les résultats supposent vraie notre hypothèse sur la Tanzanie.
 
+## Deuxième tâche : pousser le modèle principal vers 0,80
+
+Tu es chargé de la performance du **modèle principal**, celui à 10 questions qu'Oscar construit. Objectif : **0,80 de F1 macro**.
+
+Des essais préalables, en validation croisée sur entraînement + validation, donnent entre 0,731 et 0,737 pour tous les modèles, de la logistique à CatBoost. Ton modèle logistique complet est à 0,74. Le plafond de ces données est estimé à 0,80 environ au mieux : 6,7 % des personnes ont un jumeau aux mêmes réponses et au résultat inverse. 0,75 à 0,76 serait déjà un très bon résultat.
+
+**Partage avec Oscar :** Oscar livre d'abord `src/modele_principal.py` (modèle de base, facteurs du score). Tu travailles dans `notebooks/07_optimisation.ipynb`. Quand tu trouves une meilleure configuration, tu modifies seulement `entrainer()` dans `src/modele_principal.py`, après accord avec lui, et vous vérifiez ensemble que `expliquer()` fonctionne toujours.
+
+Pistes, de la plus prometteuse à la moins prometteuse :
+
+1. **Un seuil par pays.** Les taux de comptes vont de 8,6 % en Ouganda à 25 % au Kenya : un seuil unique ne convient à aucun pays. Choisis un seuil par pays par validation croisée. Gain attendu : 0,01 à 0,02.
+2. **Réglage de CatBoost avec Optuna**, par validation croisée sur `X_ent` seulement. Gain attendu : environ 0,005.
+3. **Moyenne des probabilités de CatBoost et de la logistique.** Garde-la seulement si elle fait mieux en validation.
+
+Ajoute `catboost==1.2.10` et `optuna==4.9.0` à `requirements.txt`, et `catboost==1.2.10` à `requirements-app.txt` si CatBoost est retenu.
+
+**Interdit :** utiliser le test pour choisir ou régler quoi que ce soit. C'est la seule façon d'« atteindre » 0,80, et c'est tricher.
+
+Le modèle court ne peut pas dépasser le modèle complet : si une piste marche, essaie-la aussi sur tes 3 questions.
+
 ## Pour envoyer
 
 `git add` tes fichiers, `git commit`, `git pull --rebase`, puis `git push`.
