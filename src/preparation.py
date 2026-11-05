@@ -33,10 +33,11 @@ def corriger_tanzanie(donnees):
 
 
 def regrouper_rares(donnees):
-    """Regroupe les trois modalités trop rares pour être estimées seules."""
+    """Regroupe les trois modalités trop rares pour être estimées seules. Ignore les colonnes absentes (formulaire court)."""
     copie = donnees.copy()
     for variable, regroupement in MODALITES_RARES.items():
-        copie[variable] = copie[variable].replace(regroupement)
+        if variable in copie:
+            copie[variable] = copie[variable].replace(regroupement)
     return copie
 
 

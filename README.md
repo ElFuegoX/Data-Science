@@ -13,7 +13,7 @@ notebooks/       01_eda, 02_preparation, 03_decoupage, puis la modélisation
 src/             code réutilisable : preparation.py, decoupage.py
 instructions/    tâches de modélisation de chaque membre
 models/          modèles sauvegardés (à venir)
-api/             interface (à venir)
+app/             interface Streamlit : streamlit run app/app.py
 ```
 
 Les données préparées ne sont pas écrites sur disque : chaque notebook appelle `src/preparation.py`.
@@ -41,4 +41,5 @@ Ouvrir les notebooks de `notebooks/` et exécuter les cellules dans l'ordre.
 - [x] Préparation des données : [notebooks/02_preparation.ipynb](notebooks/02_preparation.ipynb)
 - [x] Découpage commun 70/15/15 et référence naïve : [notebooks/03_decoupage.ipynb](notebooks/03_decoupage.ipynb)
 - [ ] Modélisation : modèle principal (Oscar), KNN (Félicité), modèle court (Loan). Voir [instructions/](instructions/)
-- [ ] Interface, déploiement et réentraînement automatique
+- [ ] Interface : première version avec des fonctions provisoires, dans [app/](app/)
+- [ ] Déploiement et réentraînement automatique
