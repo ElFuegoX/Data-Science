@@ -242,9 +242,18 @@ function afficherComplet(resultat) {
   graphique.setAttribute("aria-label", `Ce portrait : ${pourcent(resultat.probabilite)}. Moyenne : ${pourcent(etat.ref.taux_global)}.`);
 
   const v = resultat.voisins;
-  document.getElementById("texte-voisins").innerHTML = `Parmi les ${v.k} personnes de l'enquête qui ressemblent le plus à ce portrait,
-    <strong>${pourcent(v.taux)}</strong> ont un compte. En ne gardant que les personnes interrogées ${echapper(mot("country", r.country))},
-    la part est de <strong>${pourcent(v.taux_meme_pays)}</strong>. Ce sont des taux réellement observés, pas des estimations.`;
+  const pays = echapper(mot("country", r.country));
+  const ecartVoisins = Math.round((v.taux_meme_pays - v.taux) * 100);
+  const lecture = Math.abs(ecartVoisins) < 1
+    ? "Les deux taux coïncident : le pays pèse dans la ressemblance, donc les personnes les plus proches viennent presque toutes du même pays."
+    : Math.abs(ecartVoisins) < 5
+    ? "Les deux taux sont proches."
+    : `L'écart est une information, pas une erreur : ${pays}, les personnes proches de ce portrait ont ${ecartVoisins > 0 ? "plus" : "moins"}
+      souvent un compte que celles des autres pays.`;
+  document.getElementById("texte-voisins").innerHTML = `<strong>Dans toute l'enquête</strong>, parmi les ${v.k} personnes qui
+    ressemblent le plus à ce portrait, <strong>${pourcent(v.taux)}</strong> ont un compte.
+    <strong>${pays.charAt(0).toUpperCase() + pays.slice(1)}</strong>, parmi les ${v.k} plus proches, <strong>${pourcent(v.taux_meme_pays)}</strong>.
+    ${lecture} Ce sont des taux réellement observés, pas des estimations.`;
 
   document.getElementById("facteurs").innerHTML = facteurs(resultat.facteurs);
   document.getElementById("pays").innerHTML = points(resultat.pays);

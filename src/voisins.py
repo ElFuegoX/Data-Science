@@ -23,6 +23,8 @@ le nom d'import du module).
 """
 
 import os
+from functools import lru_cache
+
 import joblib
 import numpy as np
 import pandas as pd
@@ -318,7 +320,7 @@ def entrainer(X, y, k=100, seuil=0.30, weights="uniform", metric="euclidean",
         "encodeur": encodeur,
         "X_enc": X_enc,
         "y": y,
-        "pays": pays,
+        "pays": pays.to_numpy(dtype=object),  # tableau simple : un Series pandas exigerait pyarrow pour être relu
         "nn_global": nn_global,
         "index_pays": index_pays,
         "k": int(k),
@@ -339,8 +341,17 @@ def entrainer(X, y, k=100, seuil=0.30, weights="uniform", metric="euclidean",
     }
 
 
+@lru_cache(maxsize=1)
+def charger_modele():
+    """Lit models/voisins.joblib une seule fois, puis le garde en mémoire.
+
+    Après avoir réenregistré le fichier dans le même processus, appeler charger_modele.cache_clear().
+    """
+    return joblib.load(CHEMIN_MODELE)
+
+
 def _charger(objet):
-    return objet if objet is not None else joblib.load(CHEMIN_MODELE)
+    return objet if objet is not None else charger_modele()
 
 
 def voisins(profil, k=None, objet=None):
